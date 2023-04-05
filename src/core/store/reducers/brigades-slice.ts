@@ -24,6 +24,9 @@ export const brigadesSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
         },
+        brigadesFiltrationConnection(state, action: PayloadAction<number>) {
+            state.brigades = state.brigades.filter(brigade => brigade.connectionStateId === action.payload);
+        }
     }
 })
 export const {

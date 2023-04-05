@@ -1,9 +1,12 @@
 import React, {FC} from 'react';
-import {Button, Menu, Dropdown, MenuProps} from "antd";
+import {Button, Menu, Dropdown, MenuProps, Space, Select} from "antd";
 import {DownOutlined} from '@ant-design/icons';
+import {useAppDispatch} from "../../core/hooks/use-app-dispatch";
+import {brigadesSlice, selectBrigadesReducers} from "../../core/store/reducers/brigades-slice";
+import {useAppSelector} from "../../core/hooks/use-app-selector";
 
 interface Options {
-    id: number,
+    connectionStateId: number,
     name: string
 }
 
@@ -12,23 +15,24 @@ interface FilterItemProps {
 }
 
 const FilterItem: FC<FilterItemProps> = ({options}) => {
+    const dispatch = useAppDispatch();
+    const {brigades} = useAppSelector(selectBrigadesReducers);
+    console.log(options)
 
-    const menu = (
-        <Menu>
-            {options.map(option =>
-                <Menu.Item key={option.id}>
-                    {option.name}
-                </Menu.Item>
-            )}
-        </Menu>
-    );
+    const handleChange = (value: string) => {
+        dispatch(brigadesSlice.actions.brigadesFiltrationConnection(Number(value)));
+        console.log(`selected ${value}`);
+    };
 
     return (
-        <Dropdown overlay={menu}>
-            <Button>
-                Dropdown <DownOutlined/>
-            </Button>
-        </Dropdown>
+        <Space wrap style={{display: "flex", flexDirection: "column", alignItems: "start"}}>
+            <span>Соединение:</span>
+            <Select
+                style={{width: 200}}
+                onChange={handleChange}
+                options={options.map(option => ({value: option.connectionStateId.toString(), label: option.name}))}
+            />
+        </Space>
     );
 };
 

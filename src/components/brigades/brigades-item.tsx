@@ -21,12 +21,14 @@ const BrigadesItem: FC<BrigadesItemProps> = ({brigade}) => {
         // @ts-ignore
         if (currentDepartment.id === department["id"]) return currentDepartment;
     });
+    const isAvailable = currentStatus.length > 0 && currentStatus[0].name === "Доступен" ? {color: 'green'} : {color: 'red'};
 
     return (
         <Card title={brigade_name} style={{width: 300, height: '250px'}}>
             <div style={{display: 'flex', flexDirection: 'column'}}>
-                <h3>{currentDepartments.length>0&&currentDepartments[0].name}</h3>
-                <span><b>Соединение</b>: {currentStatus.length > 0 ? currentStatus[0].name : "No status found"}</span>
+                <h3>{currentDepartments.length > 0 && currentDepartments[0].name}</h3>
+                <span
+                    style={isAvailable}><b>Соединение</b>: {currentStatus.length > 0 ? currentStatus[0].name : "No status found"}</span>
                 <span><b>Кластер</b>: {position.cluster}</span>
                 <span><b>Поле</b>: {position.field}</span>
                 <span><b>Скважина</b>: {position.well}</span>

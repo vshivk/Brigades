@@ -19,11 +19,8 @@ const FiltersList: FC = () => {
 
     return (
         <div style={{display: 'flex', gap: '15px', marginTop: '20px'}}>
-            {/*<FilterItem*/}
-            {/*    options={connections}*/}
-            {/*/>*/}
             <FilterItem
-                options={departments}
+                options={connections}
             />
         </div>
     );
