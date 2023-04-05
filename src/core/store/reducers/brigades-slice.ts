@@ -27,6 +27,7 @@ export const brigadesSlice = createSlice({
     }
 })
 export const {
+    brigadesFetching
 } = brigadesSlice.actions;
 export const selectBrigadesReducers = (state: RootState) => state.brigadesReducer;
 export default brigadesSlice.reducer;

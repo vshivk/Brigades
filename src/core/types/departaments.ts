@@ -4,6 +4,6 @@ export interface DepartmentsState {
     error: string
 }
 export interface Department {
-    connectionStateId: number,
+    id: number,
     name: string
 }

@@ -5,5 +5,5 @@ export interface ConnectionState {
 }
 export interface Connection {
     connectionStateId: number,
-    name: 'string'
+    name: string
 }

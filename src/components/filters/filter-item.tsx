@@ -3,7 +3,7 @@ import {Button, Menu, Dropdown, MenuProps} from "antd";
 import {DownOutlined} from '@ant-design/icons';
 
 interface Options {
-    connectionStateId: number,
+    id: number,
     name: string
 }
 
@@ -12,11 +12,11 @@ interface FilterItemProps {
 }
 
 const FilterItem: FC<FilterItemProps> = ({options}) => {
-    console.log(options)
+
     const menu = (
         <Menu>
             {options.map(option =>
-                <Menu.Item key={option.connectionStateId}>
+                <Menu.Item key={option.id}>
                     {option.name}
                 </Menu.Item>
             )}
