@@ -12,8 +12,8 @@ export const brigadesSlice = createSlice({
     name: 'brigades',
     initialState,
     reducers: {
-        brigadesFetching(state) {
-            state.isLoading = true;
+        brigadesFetching(state, action: PayloadAction<boolean>) {
+            state.isLoading = action.payload;
         },
         brigadesFetchingSuccess(state, action: PayloadAction<Brigade[]>) {
             state.error = '';
@@ -24,9 +24,9 @@ export const brigadesSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
         },
-        brigadesFiltrationConnection(state, action: PayloadAction<number>) {
-            state.brigades = state.brigades.filter(brigade => brigade.connectionStateId === action.payload);
-        }
+        // brigadesFiltrationConnection(state, action: PayloadAction<number>) {
+        //     state.brigades = state.brigades.filter(brigade => brigade.connectionStateId === action.payload);
+        // }
     }
 })
 export const {
