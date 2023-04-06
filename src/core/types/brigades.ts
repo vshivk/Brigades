@@ -9,7 +9,7 @@ export interface Brigade {
     id: number,
     brigade_name: string,
     connectionStateId: number,
-    department: departmentId[],
+    department: departmentId,
     position: PositionState
 }
 

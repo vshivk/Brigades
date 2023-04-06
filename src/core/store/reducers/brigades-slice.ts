@@ -23,14 +23,9 @@ export const brigadesSlice = createSlice({
         brigadesFetchingError(state, action: PayloadAction<string>) {
             state.isLoading = false;
             state.error = action.payload;
-        },
-        // brigadesFiltrationConnection(state, action: PayloadAction<number>) {
-        //     state.brigades = state.brigades.filter(brigade => brigade.connectionStateId === action.payload);
-        // }
+        }
     }
 })
-export const {
-    brigadesFetching
-} = brigadesSlice.actions;
+
 export const selectBrigadesReducers = (state: RootState) => state.brigadesReducer;
 export default brigadesSlice.reducer;

@@ -3,17 +3,17 @@ import FiltersList from "./components/filters/filters-list";
 import BrigadesList from "./components/brigades/brigades-list";
 
 const App: FC = () => {
-    const [filterValue, setFilterValue] = useState<string>('');
+    const [filterConnectionValue, setFilterConnectionValue] = useState<string>('');
     const [filterDepartmentValue, setFilterDepartmentValue] = useState<string>('');
 
     return (
         <div className="App">
             <FiltersList
-                setFilterValue={setFilterValue}
+                setFilterConnectionValue={setFilterConnectionValue}
                 setFilterDepartmentValue={setFilterDepartmentValue}
             />
             <BrigadesList
-                filterValue={filterValue}
+                filterConnectionValue={filterConnectionValue}
                 filterDepartmentValue={filterDepartmentValue}
             />
         </div>

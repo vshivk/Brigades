@@ -1,34 +1,53 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {Card, Space} from "antd";
 import {fetchBrigades} from "../../core/store/action-creators/brigades";
 import {useAppSelector} from "../../core/hooks/use-app-selector";
-import {brigadesSlice, selectBrigadesReducers} from "../../core/store/reducers/brigades-slice";
+import {selectBrigadesReducers} from "../../core/store/reducers/brigades-slice";
 import {useAppDispatch} from "../../core/hooks/use-app-dispatch";
 import BrigadesItem from "./brigades-item";
 import {maxElementsPerPage} from "../../core/consts/consts";
 import {Brigade} from "../../core/types/brigades";
+import {BrigadesListStyled} from "./styled";
+import {BrigadesListProps} from "../../core/types/props";
 
-interface BrigadesListProps {
-    filterValue: string,
-    filterDepartmentValue: string
-}
-
-const BrigadesList: FC<BrigadesListProps> = ({filterValue, filterDepartmentValue}) => {
+const BrigadesList: FC<BrigadesListProps> = ({filterConnectionValue, filterDepartmentValue}) => {
     const dispatch = useAppDispatch();
     const {brigades, isLoading, error} = useAppSelector(selectBrigadesReducers);
     const [filteredByValueBrigades, setFilteredByValueBrigades] = useState<Brigade[]>([]);
     const [filteredByDepartmentBrigades, setFilteredByDepartmentBrigades] = useState<Brigade[]>([]);
-    const data = (
-        filterValue === '' && filterDepartmentValue === ''
-            ? brigades
-            : (
-                filteredByValueBrigades.length > 0 && filteredByDepartmentBrigades.length > 0
-                    ? filteredByValueBrigades.filter(brigade1 =>
-                        filteredByDepartmentBrigades.some(brigade2 => brigade1.id === brigade2.id))
-                    : filteredByValueBrigades.length > 0
-                        ? filteredByValueBrigades
-                        : filteredByDepartmentBrigades
-            )
+    const [startIndex, setStartIndex] = useState<number>(0);
+    const [endIndex, setEndIndex] = useState<number>(maxElementsPerPage);
+
+    const filterBrigades = () => {
+        if (filterConnectionValue === '' && filterDepartmentValue === '') {
+            return brigades.slice(0, endIndex);
+        } else if (filteredByValueBrigades.length > 0 && filteredByDepartmentBrigades.length > 0) {
+            return filteredByValueBrigades.filter(brigadeOne =>
+                filteredByDepartmentBrigades.some(brigadeTwo => brigadeOne.id === brigadeTwo.id));
+        } else {
+            return filteredByValueBrigades.length > 0
+                ? filteredByValueBrigades
+                : filteredByDepartmentBrigades;
+        }
+    };
+    const data = filterBrigades();
+
+    const resetIndex = () => {
+        setStartIndex(0);
+        setEndIndex(maxElementsPerPage);
+    }
+
+    const loadOnScroll = useCallback(
+        (e: Event) => {
+            const target = e.target as Document;
+            const isNearBottom =
+                target.documentElement.scrollHeight -
+                (target.documentElement.scrollTop + window.innerHeight) < 100;
+            if (isNearBottom) {
+                setStartIndex(endIndex);
+                setEndIndex(endIndex + maxElementsPerPage);
+            }
+        },
+        [endIndex]
     );
 
     useEffect(() => {
@@ -36,49 +55,45 @@ const BrigadesList: FC<BrigadesListProps> = ({filterValue, filterDepartmentValue
     }, []);
 
     useEffect(() => {
-        if (filterValue !== '') {
-            setFilteredByValueBrigades(brigades.filter(brigade => String(brigade.connectionStateId) === filterValue));
+        const filterByConnection = (brigade: Brigade) =>
+            String(brigade.connectionStateId) === filterConnectionValue;
+        if (filterConnectionValue) {
+            setFilteredByValueBrigades(brigades.filter(filterByConnection));
         } else {
             setFilteredByValueBrigades([]);
         }
-    }, [brigades, filterValue]);
+        resetIndex();
+    }, [brigades, filterConnectionValue]);
 
     useEffect(() => {
-        if(filterDepartmentValue !== ''){
-            setFilteredByDepartmentBrigades(brigades.filter(brigade => {
-                // @ts-ignore
-                return String(brigade.department?.id) === filterDepartmentValue;
-            }));
+        const filterByDepartment = (brigade: Brigade) =>
+            String(brigade.department.id) === filterDepartmentValue;
+        if (filterDepartmentValue) {
+            setFilteredByDepartmentBrigades(brigades.filter(filterByDepartment));
         } else {
             setFilteredByDepartmentBrigades([]);
         }
+        resetIndex();
     }, [brigades, filterDepartmentValue]);
 
-    const scrollHandler = useCallback((e:any)=>{
-        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100){
-            console.log('scroll')
-        }
-    },[]);
-
     useEffect(() => {
-    document.addEventListener('scroll', scrollHandler);
-    return () => {
-        document.removeEventListener('scroll', scrollHandler);
-    }
-}, [scrollHandler]);
+        document.addEventListener('scroll', loadOnScroll);
+        return () => {
+            document.removeEventListener('scroll', loadOnScroll);
+        };
+    }, [loadOnScroll]);
 
     return (
         <>
             {data.length > 0 &&
-                <Space direction="vertical" size={14}
-                       style={{marginTop: '20px', display: 'flex', flexWrap: 'wrap', flexDirection: 'unset'}}>
+                <BrigadesListStyled direction="vertical" size={14}>
                     {data.map(brigade =>
                         <BrigadesItem
                             key={brigade.id}
                             brigade={brigade}
                         />
                     )}
-                </Space>
+                </BrigadesListStyled>
             }
             {error && <p>{error}</p>}
             {isLoading && <p>Идет загрузка...</p>}
@@ -88,38 +103,3 @@ const BrigadesList: FC<BrigadesListProps> = ({filterValue, filterDepartmentValue
 };
 
 export default BrigadesList;
-
-
-// let [startIndex, setStartIndex] = useState(0);
-// let [endIndex, setEndIndex] = useState(maxElementsPerPage);
-
-// useEffect(() => {
-//     if (filterValue === '') {
-//         const slicedData = brigades.slice(startIndex, endIndex);
-//         setBrigadesData([...brigadesData, ...slicedData]);
-//     } else {
-//         setFilteredBrigadesData(brigadesData.filter((brigade) => String(brigade.connectionStateId) === filterValue))
-//     }
-//     dispatch(brigadesSlice.actions.brigadesFetching(false));
-// }, [brigades, startIndex, endIndex, filterValue]);
-
-// const scrollHandler = useCallback((e: any) => {
-//     if (filterValue !== '' && brigadesData !== filteredBrigadesData) {
-//         setStartIndex(0);
-//         setEndIndex(maxElementsPerPage);
-//         setBrigadesData(brigades.slice(0, maxElementsPerPage));
-//     }
-//     if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 100
-//         && brigades.length > brigadesData.length) {
-//         dispatch(brigadesSlice.actions.brigadesFetching(true));
-//         setStartIndex(startIndex += maxElementsPerPage);
-//         setEndIndex(endIndex += maxElementsPerPage);
-//     }
-// }, [dispatch, brigades.length, brigadesData.length]);
-
-// useEffect(() => {
-//     document.addEventListener('scroll', scrollHandler);
-//     return () => {
-//         document.removeEventListener('scroll', scrollHandler);
-//     }
-// }, [scrollHandler]);

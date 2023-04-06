@@ -1,32 +1,20 @@
 import React, {FC} from 'react';
-import {Select, Space} from "antd";
+import {Select} from "antd";
+import {FilterItemStyled} from "./styled";
+import {FilterDepartmentProps} from "../../core/types/props";
 
-interface Options {
-    id: number,
-    name: string
-}
-
-interface FilterDepartmentProps {
-    options: Options[],
-    setFilterDepartmentValue:  React.Dispatch<React.SetStateAction<string>>
-}
-
-const FilterDepartment:FC<FilterDepartmentProps> = ({options,setFilterDepartmentValue}) => {
-
-    const handleFilterChange = (value:string) => {
-        setFilterDepartmentValue(value);
-    };
+const FilterDepartment: FC<FilterDepartmentProps> = ({options, setFilterDepartmentValue}) => {
 
     return (
-        <Space wrap style={{display: "flex", flexDirection: "column", alignItems: "start"}}>
+        <FilterItemStyled wrap>
             <span>Департамент:</span>
             <Select
                 defaultValue={''}
                 style={{width: 200}}
-                onChange={handleFilterChange}
+                onChange={value => setFilterDepartmentValue(value)}
                 options={options.map(option => ({value: option.id.toString(), label: option.name}))}
             />
-        </Space>
+        </FilterItemStyled>
     );
 };
 

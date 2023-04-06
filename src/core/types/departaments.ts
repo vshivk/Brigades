@@ -3,6 +3,7 @@ export interface DepartmentsState {
     isLoading: boolean,
     error: string
 }
+
 export interface Department {
     id: number,
     name: string

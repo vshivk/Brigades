@@ -25,6 +25,5 @@ export const connectionsSlice = createSlice({
         },
     }
 })
-export const {} = connectionsSlice.actions;
 export const selectConnectionsReducers = (state: RootState) => state.connectionsReducer;
 export default connectionsSlice.reducer;

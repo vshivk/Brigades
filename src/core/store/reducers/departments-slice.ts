@@ -26,8 +26,5 @@ export const departmentsSlice = createSlice({
         },
     }
 })
-export const {
-    departmentsFetching
-} = departmentsSlice.actions;
 export const selectDepartmentsReducers = (state: RootState) => state.departmentsReducer;
 export default departmentsSlice.reducer;

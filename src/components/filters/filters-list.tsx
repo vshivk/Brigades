@@ -1,5 +1,5 @@
 import React, {FC, useEffect} from 'react';
-import FilterItem from "./filter-item";
+import FilterConnection from "./filter-connection";
 import {useAppDispatch} from "../../core/hooks/use-app-dispatch";
 import {fetchDepartments} from "../../core/store/action-creators/departments";
 import {useAppSelector} from "../../core/hooks/use-app-selector";
@@ -7,13 +7,10 @@ import {selectConnectionsReducers} from "../../core/store/reducers/connection-sl
 import {fetchConnections} from "../../core/store/action-creators/connections";
 import FilterDepartment from "./filter-department";
 import {selectDepartmentsReducers} from "../../core/store/reducers/departments-slice";
+import {FilterListStyled} from "./styled";
+import {FiltersListProps} from "../../core/types/props";
 
-interface FiltersListProps {
-    setFilterValue:  React.Dispatch<React.SetStateAction<string>>,
-    setFilterDepartmentValue: React.Dispatch<React.SetStateAction<string>>
-}
-
-const FiltersList: FC<FiltersListProps> = ({setFilterValue,setFilterDepartmentValue}) => {
+const FiltersList: FC<FiltersListProps> = ({setFilterConnectionValue,setFilterDepartmentValue}) => {
     const dispatch = useAppDispatch();
     const {connections} = useAppSelector(selectConnectionsReducers);
     const {departments} = useAppSelector(selectDepartmentsReducers);
@@ -24,16 +21,16 @@ const FiltersList: FC<FiltersListProps> = ({setFilterValue,setFilterDepartmentVa
     }, []);
 
     return (
-        <div style={{display: 'flex', gap: '15px', marginTop: '20px'}}>
-            <FilterItem
+        <FilterListStyled>
+            <FilterConnection
                 options={connections}
-                setFilterValue={setFilterValue}
+                setFilterConnectionValue={setFilterConnectionValue}
             />
             <FilterDepartment
                 options={departments}
                 setFilterDepartmentValue={setFilterDepartmentValue}
             />
-        </div>
+        </FilterListStyled>
     );
 };
 
