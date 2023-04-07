@@ -5,7 +5,6 @@ import {RootState} from "../store";
 export const initialState: BrigadesState = {
     brigades: [],
     isLoading: true,
-    currentPage: 1,
     error: '',
 }
 export const brigadesSlice = createSlice({

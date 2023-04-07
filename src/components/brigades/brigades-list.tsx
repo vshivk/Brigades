@@ -11,14 +11,14 @@ import {BrigadesListProps} from "../../core/types/props";
 
 const BrigadesList: FC<BrigadesListProps> = ({filterConnectionValue, filterDepartmentValue}) => {
     const dispatch = useAppDispatch();
-    const {brigades, isLoading, error} = useAppSelector(selectBrigadesReducers);
+    const { brigades, isLoading, error } = useAppSelector(selectBrigadesReducers);
     const [filteredByValueBrigades, setFilteredByValueBrigades] = useState<Brigade[]>([]);
     const [filteredByDepartmentBrigades, setFilteredByDepartmentBrigades] = useState<Brigade[]>([]);
-    const [startIndex, setStartIndex] = useState<number>(0);
-    const [endIndex, setEndIndex] = useState<number>(maxElementsPerPage);
+    const [startIndex, setStartIndex] = useState(0);
+    const [endIndex, setEndIndex] = useState(maxElementsPerPage);
 
     const filterBrigades = () => {
-        if (filterConnectionValue === '' && filterDepartmentValue === '') {
+        if (!filterConnectionValue && !filterDepartmentValue) {
             return brigades.slice(0, endIndex);
         } else if (filteredByValueBrigades.length > 0 && filteredByDepartmentBrigades.length > 0) {
             return filteredByValueBrigades.filter(brigadeOne =>
@@ -34,29 +34,23 @@ const BrigadesList: FC<BrigadesListProps> = ({filterConnectionValue, filterDepar
     const resetIndex = () => {
         setStartIndex(0);
         setEndIndex(maxElementsPerPage);
-    }
+    };
 
-    const loadOnScroll = useCallback(
-        (e: Event) => {
-            const target = e.target as Document;
-            const isNearBottom =
-                target.documentElement.scrollHeight -
-                (target.documentElement.scrollTop + window.innerHeight) < 100;
-            if (isNearBottom) {
-                setStartIndex(endIndex);
-                setEndIndex(endIndex + maxElementsPerPage);
-            }
-        },
-        [endIndex]
-    );
+    const loadOnScroll = useCallback((e: Event) => {
+        const target = e.target as Document;
+        const isNearBottom = target.documentElement.scrollHeight - (target.documentElement.scrollTop + window.innerHeight) < 100;
+        if (isNearBottom) {
+            setStartIndex(endIndex);
+            setEndIndex(endIndex + maxElementsPerPage);
+        }
+    }, [endIndex]);
 
     useEffect(() => {
         dispatch(fetchBrigades());
     }, []);
 
     useEffect(() => {
-        const filterByConnection = (brigade: Brigade) =>
-            String(brigade.connectionStateId) === filterConnectionValue;
+        const filterByConnection = (brigade: Brigade) => String(brigade.connectionStateId) === filterConnectionValue;
         if (filterConnectionValue) {
             setFilteredByValueBrigades(brigades.filter(filterByConnection));
         } else {
@@ -66,8 +60,7 @@ const BrigadesList: FC<BrigadesListProps> = ({filterConnectionValue, filterDepar
     }, [brigades, filterConnectionValue]);
 
     useEffect(() => {
-        const filterByDepartment = (brigade: Brigade) =>
-            String(brigade.department.id) === filterDepartmentValue;
+        const filterByDepartment = (brigade: Brigade) => String(brigade.department.id) === filterDepartmentValue;
         if (filterDepartmentValue) {
             setFilteredByDepartmentBrigades(brigades.filter(filterByDepartment));
         } else {
@@ -85,20 +78,16 @@ const BrigadesList: FC<BrigadesListProps> = ({filterConnectionValue, filterDepar
 
     return (
         <>
-            {data.length > 0 &&
+            {data.length > 0 && (
                 <BrigadesListStyled direction="vertical" size={14}>
-                    {data.map(brigade =>
-                        <BrigadesItem
-                            key={brigade.id}
-                            brigade={brigade}
-                        />
-                    )}
+                    {data.map(brigade => (
+                        <BrigadesItem key={brigade.id} brigade={brigade} />
+                    ))}
                 </BrigadesListStyled>
-            }
+            )}
             {error && <p>{error}</p>}
             {isLoading && <p>Идет загрузка...</p>}
         </>
-
     );
 };
 

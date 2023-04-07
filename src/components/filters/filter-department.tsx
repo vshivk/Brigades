@@ -6,15 +6,21 @@ import {FilterDepartmentProps} from "../../core/types/props";
 const FilterDepartment: FC<FilterDepartmentProps> = ({options, setFilterDepartmentValue}) => {
 
     return (
-        <FilterItemStyled wrap>
-            <span>Департамент:</span>
-            <Select
-                defaultValue={''}
-                style={{width: 200}}
-                onChange={value => setFilterDepartmentValue(value)}
-                options={options.map(option => ({value: option.id.toString(), label: option.name}))}
-            />
-        </FilterItemStyled>
+        <>
+            {options.length > 0
+                &&
+                <FilterItemStyled wrap>
+                    <span>Департамент:</span>
+                    <Select
+                        defaultValue={''}
+                        style={{width: 200}}
+                        allowClear
+                        onChange={value => setFilterDepartmentValue(value)}
+                        options={options.map(option => ({value: option.id.toString(), label: option.name}))}
+                    />
+                </FilterItemStyled>
+            }
+        </>
     );
 };
 

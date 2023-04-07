@@ -1,7 +1,6 @@
 export interface BrigadesState {
     brigades: Brigade[],
     isLoading: boolean,
-    currentPage: number,
     error: string
 }
 
